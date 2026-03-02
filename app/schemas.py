@@ -13,3 +13,10 @@ class GetTaskOutputResponse(BaseModel):
     status: str
     task_output: Dict[str, Any] | None = None
     error: str | None = None
+
+class WordCountRequest(BaseModel):
+    text: str
+
+class WordCountResponse(BaseModel):
+    words: int
+    chars: int

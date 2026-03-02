@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from app.db import get_db
-from app.schemas import RunTaskRequest, RunTaskResponse, GetTaskOutputResponse
+from app.schemas import RunTaskRequest, RunTaskResponse, GetTaskOutputResponse, WordCountResponse, WordCountRequest
 from app.services import create_and_enqueue_task
 from app.models import Task
 from app.cache import get_cached_output, set_cached_output
@@ -37,3 +37,8 @@ def get_task_output(task_uuid: str = Query(...), db: Session = Depends(get_db)):
         set_cached_output(task_uuid, payload)
 
     return GetTaskOutputResponse(**payload)
+
+@app.post("/word-count", response_model=WordCountResponse)
+def word_count(req: WordCountRequest):
+    words = [w for w in req.text.strip().split() if w]
+    return WordCountResponse(words=len(words), chars=len(req.text))
